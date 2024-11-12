@@ -48,4 +48,5 @@ public class Person {
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
     }
+
 }
