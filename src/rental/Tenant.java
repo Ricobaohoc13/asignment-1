@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Tenant extends Person{
-    public Tenant(int id, String fullName, String contactInfo, Date birthday) {
-        super(id, fullName, contactInfo, birthday);
+    public Tenant(int id, String fullName, String contactInfo, Date birthday, String role) {
+        super(id, fullName, contactInfo, birthday, role);
     }
     private List<RentalAgreement> rentalAgreements = new ArrayList<>();
     private List<Payment> paymentTransactions = new ArrayList<>();

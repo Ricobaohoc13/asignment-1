@@ -13,8 +13,9 @@ public class Person {
     private String fullName;
     private Date birthday;
     private String contactInfo;
+    private String role;
 
-    public Person(int id, String fullName, String contactInfo, Date birthday) {
+    public Person(int id, String fullName, String contactInfo, Date birthday, String role) {
         this.id = id;
         this.fullName = fullName;
         this.contactInfo = contactInfo;
@@ -38,6 +39,8 @@ public class Person {
         return contactInfo;
     }
 
+    public String getRole() { return role; }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -54,6 +57,8 @@ public class Person {
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
     }
+
+    public void setRole(String role) { this.role = role; }
 
     // Methods for console input
     public void inputId() {

@@ -10,8 +10,8 @@ public class Host extends Person {
     private List<Person> cooperatingOwners = new ArrayList<>();
     private List<RentalAgreement> rentalAgreements = new ArrayList<>();
 
-    public Host(int id, String fullName, String contactInfo, Date birthday) {
-        super(id, fullName, contactInfo, birthday);
+    public Host(int id, String fullName, String contactInfo, Date birthday, String role) {
+        super(id, fullName, contactInfo, birthday, role);
     }
 
     // Add a property to the managed properties list
