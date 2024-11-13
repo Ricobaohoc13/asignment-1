@@ -1,21 +1,20 @@
 package rental;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.Iterator;
 
 public class UI {
     private List<Person> people = new ArrayList<>();
     private Scanner scanner = new Scanner(System.in);
+    private static final String FILE_NAME = "information.dat";
 
     public static void main(String[] args) {
         UI manager = new UI();
@@ -23,11 +22,9 @@ public class UI {
     }
 
     public void run() {
-        // Load existing data from file before the main menu
-        loadFromFile();
+        loadFromFile();  // Load data at startup
 
         int choice;
-
         do {
             System.out.println("\n--- Person Management System ---");
             System.out.println("Select role:");
@@ -49,35 +46,26 @@ public class UI {
                 System.out.println("2. Delete Person");
                 System.out.println("3. Update Person");
                 System.out.println("4. View All People");
-                System.out.println("5. Exit the program");
+                System.out.println("5. Display File Contents");
+                System.out.println("6. Exit the program");
                 System.out.println("0. Back to Role Selection");
                 System.out.print("Enter your choice: ");
                 choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
-                    case 1:
-                        addPerson(roleString);
-                        break;
-                    case 2:
-                        deletePerson();
-                        break;
-                    case 3:
-                        updatePerson();
-                        break;
-                    case 4:
-                        viewAllPeople();
-                        break;
-                    case 5:
+                    case 1 -> addPerson(roleString);
+                    case 2 -> deletePerson();
+                    case 3 -> updatePerson();
+                    case 4 -> viewAllPeople();
+                    case 5 -> displayFile(); // New option to display file contents
+                    case 6 -> {
                         System.out.println("Exiting...");
                         return;
-                    case 0:
-                        System.out.println("Returning to role selection...");
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                    }
+                    case 0 -> System.out.println("Returning to role selection...");
+                    default -> System.out.println("Invalid choice. Please try again.");
                 }
             } while (choice != 0);
-
         } while (true);
     }
 
@@ -97,9 +85,8 @@ public class UI {
         person.inputBirthday();
         person.inputContactInfo();
 
-        // Save immediately after contact info is entered
-        people.add(person);
-        saveToFile();
+        people.add(person);  // Add to the list
+        saveToFile();        // Save immediately to file
         System.out.println(role + " added successfully.");
     }
 
@@ -134,7 +121,6 @@ public class UI {
                 person.inputBirthday();
                 person.inputContactInfo();
 
-                // Save immediately after updating contact info
                 saveToFile();
                 System.out.println("Person updated successfully.");
                 return;
@@ -154,9 +140,10 @@ public class UI {
     }
 
     private void saveToFile() {
-        try (FileWriter writer = new FileWriter(new File("information.dat"), false)) {  // Overwrite file each time
+        try (FileWriter writer = new FileWriter(FILE_NAME, false)) {  // Overwrite file each time
             for (Person person : people) {
-                writer.write(person.toString() + "\n");  // Write each person's info to the file
+                writer.write(person.getId() + ", " + person.getFullName() + ", " + person.getRole() + ", "
+                        + new SimpleDateFormat("yyyy-MM-dd").format(person.getBirthday()) + ", " + person.getContactInfo() + "\n");
             }
             System.out.println("Data saved to file.");
         } catch (IOException e) {
@@ -166,18 +153,21 @@ public class UI {
     }
 
     private void loadFromFile() {
-        File file = new File("information.dat");
+        File file = new File(FILE_NAME);
         if (!file.exists()) {
             System.out.println("No data file found.");
-            return;  // No data to load, just return
+            return;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Parse each line into a Person object and add to the people list
                 Person person = parsePersonFromFile(line);
-                people.add(person);
+                if (person != null) {
+                    people.add(person);  // Add only if parsing was successful
+                } else {
+                    System.out.println("Failed to parse line: " + line);
+                }
             }
             System.out.println("Data loaded from file.");
         } catch (IOException e) {
@@ -187,28 +177,39 @@ public class UI {
     }
 
     private Person parsePersonFromFile(String line) {
-        // A simple parsing method. You may need to adjust based on your file format.
-        String[] parts = line.split(", ");  // Assuming your format is like: "ID: 1, Full Name: John Doe, Role: Host, ..."
-
-        if (parts.length == 5) {
-            int id = Integer.parseInt(parts[0].split(": ")[1]);
-            String fullName = parts[1].split(": ")[1];
-            String role = parts[2].split(": ")[1];
-            String birthdayStr = parts[3].split(": ")[1];
-            String contactInfo = parts[4].split(": ")[1];
-
-            // Convert the birthday string to a Date object
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date birthday = null;
+        String[] parts = line.split(", ");
+        if (parts.length == 5) {  // Verify correct format with all parts present
             try {
-                birthday = dateFormat.parse(birthdayStr);
-            } catch (ParseException e) {
+                int id = Integer.parseInt(parts[0].trim());
+                String fullName = parts[1].trim();
+                String role = parts[2].trim();
+                Date birthday = new SimpleDateFormat("yyyy-MM-dd").parse(parts[3].trim());
+                String contactInfo = parts[4].trim();
+
+                return new Person(id, fullName, contactInfo, birthday, role);
+            } catch (NumberFormatException | ParseException e) {
+                System.out.println("Error parsing line: " + line);
                 e.printStackTrace();
             }
+        }
+        System.out.println("Invalid line format: " + line);
+        return null;  // Return null if parsing fails
+    }
 
-            return new Person(id, fullName, contactInfo, birthday, role);
+    // Method to display the file contents directly
+    private static void displayFile() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            System.out.println("File does not exist.");
+            return;
         }
 
-        return null;  // Return null if parsing fails
+        try {
+            System.out.println("\nContents of " + FILE_NAME + ":");
+            Files.lines(Paths.get(FILE_NAME)).forEach(System.out::println);
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+        }
     }
 }
