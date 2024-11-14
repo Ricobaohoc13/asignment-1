@@ -1,14 +1,15 @@
 package rental;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Scanner;
-import java.text.SimpleDateFormat;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Person {
+    private static final List<Person> people = new ArrayList<>();
+    private static final String FILE_NAME = "information.dat";
     private int id;
     private String fullName;
     private Date birthday;
@@ -20,9 +21,9 @@ public class Person {
         this.fullName = fullName;
         this.contactInfo = contactInfo;
         this.birthday = birthday;
+        this.role = role;
     }
 
-    // Getters
     public int getId() {
         return id;
     }
@@ -39,28 +40,10 @@ public class Person {
         return contactInfo;
     }
 
-    public String getRole() { return role; }
-
-    // Setters
-    public void setId(int id) {
-        this.id = id;
+    public String getRole() {
+        return role;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public void setContactInfo(String contactInfo) {
-        this.contactInfo = contactInfo;
-    }
-
-    public void setRole(String role) { this.role = role; }
-
-    // Methods for console input
     public void inputId() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter ID: ");
@@ -93,17 +76,131 @@ public class Person {
     @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return "ID: " + id + ", Full Name: " + fullName + ", Birthday: " + dateFormat.format(birthday) + ", Contact Info: " + contactInfo;
+        return "ID: " + id + ", Full Name: " + fullName + ", Role: " + role +
+                ", Birthday: " + dateFormat.format(birthday) + ", Contact Info: " + contactInfo;
     }
 
-    // Method to save information to a file
-    public void saveInfo() {
-        File file = new File("information.dat");
-        try (FileWriter writer = new FileWriter(file, true)) { // 'true' for appending to the file
-            writer.write(this.toString() + "\n"); // Write the string representation of the object to the file
-            System.out.println("Information saved to " + file.getName());
+    public static void addPerson(String role) {
+        Person person = new Person(0, "", "", new Date(), role);
+        person.inputId();
+        person.inputFullName();
+        person.inputBirthday();
+        person.inputContactInfo();
+
+        people.add(person);
+        saveToFile();
+        System.out.println(role + " added successfully.");
+    }
+
+    public static void deletePerson() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the ID of the person to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        boolean found = people.removeIf(person -> person.getId() == id);
+
+        if (found) {
+            saveToFile();
+            System.out.println("Person deleted successfully.");
+        } else {
+            System.out.println("Person not found.");
+        }
+    }
+
+    public static void updatePerson() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the ID of the person to update: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        for (Person person : people) {
+            if (person.getId() == id) {
+                System.out.println("Updating person: " + person);
+                person.inputFullName();
+                person.inputBirthday();
+                person.inputContactInfo();
+                saveToFile();
+                System.out.println("Person updated successfully.");
+                return;
+            }
+        }
+        System.out.println("Person not found.");
+    }
+
+    public static void viewAllPeople() {
+        if (people.isEmpty()) {
+            System.out.println("No people to display.");
+        } else {
+            people.forEach(System.out::println);
+        }
+    }
+
+    private static void saveToFile() {
+        try (FileWriter writer = new FileWriter(FILE_NAME, false)) {
+            for (Person person : people) {
+                writer.write(person.getId() + ", " + person.getFullName() + ", " + person.getRole() + ", "
+                        + new SimpleDateFormat("yyyy-MM-dd").format(person.getBirthday()) + ", " + person.getContactInfo() + "\n");
+            }
+            System.out.println("Data saved to file.");
         } catch (IOException e) {
-            System.out.println("An error occurred while saving the information: " + e.getMessage());
+            System.out.println("An error occurred while saving to file.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadFromFile() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            System.out.println("No data file found.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Person person = parsePersonFromFile(line);
+                if (person != null) {
+                    people.add(person);
+                } else {
+                    System.out.println("Failed to parse line: " + line);
+                }
+            }
+            System.out.println("Data loaded from file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading from file.");
+            e.printStackTrace();
+        }
+    }
+
+    private static Person parsePersonFromFile(String line) {
+        String[] parts = line.split(", ");
+        if (parts.length == 5) {
+            try {
+                int id = Integer.parseInt(parts[0].trim());
+                String fullName = parts[1].trim();
+                String role = parts[2].trim();
+                Date birthday = new SimpleDateFormat("yyyy-MM-dd").parse(parts[3].trim());
+                String contactInfo = parts[4].trim();
+                return new Person(id, fullName, contactInfo, birthday, role);
+            } catch (NumberFormatException | ParseException e) {
+                System.out.println("Error parsing line: " + line);
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Invalid line format: " + line);
+        return null;
+    }
+
+    public static void displayFile() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            System.out.println("File does not exist.");
+            return;
+        }
+
+        try {
+            System.out.println("\nContents of " + FILE_NAME + ":");
+            Files.lines(Paths.get(FILE_NAME)).forEach(System.out::println);
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
         }
     }
 }
