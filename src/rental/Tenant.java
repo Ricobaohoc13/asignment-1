@@ -1,22 +1,29 @@
 package rental;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.sql.Date;
 
-public class Tenant extends Person{
-    public Tenant(int id, String fullName, String contactInfo, Date birthday, String role) {
-        super(id, fullName, contactInfo, birthday, role);
+public class Tenant extends Person {
+    private List<String> rentalAgreements;
+
+    // Constructor
+    public Tenant(int id, String fullName, Date dateOfBirth, String contactInfo) {
+        super(id, fullName, contactInfo, dateOfBirth, contactInfo);
+        this.rentalAgreements = new ArrayList<>();
     }
-    private List<RentalAgreement> rentalAgreements = new ArrayList<>();
-    private List<Payment> paymentTransactions = new ArrayList<>();
 
-    public void addRentalAgreement(RentalAgreement agreement) {
+    // Getter and Setter for rental agreements
+    public List<String> getRentalAgreements() {
+        return rentalAgreements;
+    }
+
+    public void addRentalAgreement(String agreement) {
         rentalAgreements.add(agreement);
     }
 
-    public void addPayment(Payment payment) {
-        paymentTransactions.add(payment);
+    @Override
+    public String toString() {
+        return super.toString() + ", Rental Agreements=" + rentalAgreements;
     }
-
 }

@@ -1,0 +1,15 @@
+1, Agreement 001, Bob Brown, Property 101, 2022-01-01, 2022-12-31, Monthly, 1200, Active
+2, Agreement 002, Alice Johnson, Property 102, 2023-02-01, 2023-12-31, Monthly, 1500, Active
+3, Agreement 003, John Doe, Property 103, 2021-03-01, 2022-02-28, Monthly, 1000, Completed
+4, Agreement 004, Jane Smith, Property 104, 2020-04-01, 2021-03-31, Monthly, 1800, Completed
+5, Agreement 005, Charlie White, Property 105, 2019-05-01, 2020-04-30, Monthly, 1300, Completed
+6, Agreement 006, Emily Davis, Property 106, 2023-06-01, 2024-05-31, Monthly, 1100, Active
+7, Agreement 007, Michael Brown, Property 107, 2021-07-01, 2022-06-30, Monthly, 1600, Completed
+8, Agreement 008, Sarah Wilson, Property 108, 2022-08-01, 2023-07-31, Monthly, 1400, Active
+9, Agreement 009, David Lee, Property 109, 2021-09-01, 2022-08-31, Monthly, 2000, Completed
+10, Agreement 010, Susan Clark, Property 110, 2023-10-01, 2024-09-30, Monthly, 1250, Active
+11, Agreement 011, James Miller, Property 111, 2022-11-01, 2023-10-31, Monthly, 1700, Active
+12, Agreement 012, Laura Lewis, Property 112, 2023-12-01, 2024-11-30, Monthly, 2500, Active
+13, Agreement 013, Robert Martin, Property 113, 2021-01-01, 2022-12-31, Monthly, 3000, Completed
+14, Agreement 014, Jessica Walker, Property 114, 2019-02-01, 2020-01-31, Monthly, 3500, Completed
+15, Agreement 015, Daniel Robinson, Property 115, 2020-03-01, 2021-02-28, Monthly, 2800, Completed
