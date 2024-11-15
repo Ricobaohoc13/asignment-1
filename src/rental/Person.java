@@ -1,111 +1,143 @@
 package rental;
 
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Person {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     private int id;
-    private String fullName;
+    private String name;
     private String contactInfo;
     private Date birthday;
     private String role;
 
-    // This will hold people of the current role being processed (e.g., Host, Owner, Tenant)
-    private static List<Person> people = new ArrayList<>();
-
-    public Person(int id, String fullName, String contactInfo, Date birthday, String role) {
+    // Constructor
+    public Person(int id, String name, String contactInfo, Date birthday, String role) {
         this.id = id;
-        this.fullName = fullName;
+        this.name = name;
         this.contactInfo = contactInfo;
         this.birthday = birthday;
         this.role = role;
     }
 
-    // Load people from the file, but first clear the existing people list to prevent mixing roles
-    public static void loadFromFile(String fileName, String role) {
-        people.clear();  // Clear the list to avoid mixing data between roles
+    // Getter methods
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    // Static method to load persons from file based on role
+    public static List<Person> loadFromFile(String fileName) {
+        List<Person> people = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 5) {
-                    int id = Integer.parseInt(parts[0].trim());
-                    String fullName = parts[1].trim();
-                    String contactInfo = parts[2].trim();
-                    Date birthday = dateFormat.parse(parts[3].trim());
-                    String fileRole = parts[4].trim();
-                    // Only add people with the matching role
-                    if (fileRole.equalsIgnoreCase(role)) {
-                        people.add(new Person(id, fullName, contactInfo, birthday, fileRole));
-                    }
-                } else {
-                    System.out.println("Invalid line format: " + line);
-                }
+                String[] data = line.split(",");
+                int id = Integer.parseInt(data[0]);
+                String name = data[1];
+                String contactInfo = data[2];
+                Date birthday = dateFormat.parse(data[3]);
+                String role = data[4];
+                people.add(new Person(id, name, contactInfo, birthday, role));
             }
-            System.out.println(role + " data loaded successfully from " + fileName);
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             System.out.println("Error loading data from file: " + e.getMessage());
         }
+        return people;
     }
 
-    // Add person, save data only for the correct role
-    public static void addPerson(Person person, String role, String fileName) {
-        if (!person.role.equalsIgnoreCase(role)) {
-            System.out.println("Role mismatch. Unable to add person.");
-            return;
-        }
-        people.add(person);
-        saveToFile(fileName);  // Save only for the current file
-    }
-
-    // Update person, saving only the updated list of people for the correct role
-    public static void updatePerson(int id, String newName, String newContact, String role, String fileName) {
-        for (Person person : people) {
-            if (person.id == id && person.role.equalsIgnoreCase(role)) {
-                person.fullName = newName;
-                person.contactInfo = newContact;
-                System.out.println("Updated " + role + ": " + person);
-                saveToFile(fileName);  // Save the list back to the file after update
-                return;
-            }
-        }
-        System.out.println(role + " with ID " + id + " not found.");
-    }
-
-    // Delete person, removing the person from the list and saving back the correct data
-    public static void deletePerson(int id, String role, String fileName) {
-        boolean removed = people.removeIf(person -> person.id == id && person.role.equalsIgnoreCase(role));
-        if (removed) {
-            System.out.println(role + " with ID " + id + " deleted successfully.");
-            saveToFile(fileName);  // Save after deletion
-        } else {
-            System.out.println(role + " with ID " + id + " not found.");
+    // Static method to add a person to a file
+    public static void addPerson(Person person, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String personData = person.getId() + "," + person.getName() + "," + person.getContactInfo() + ","
+                    + dateFormat.format(person.getBirthday()) + "," + person.getRole();
+            writer.write(personData);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error saving person to file: " + e.getMessage());
         }
     }
 
-    // Save the list of people to the specified file
-    private static void saveToFile(String fileName) {
+    // Static method to update a person's details in the file
+    public static void updatePerson(int id, String newName, String newContact, String fileName) {
+        List<Person> people = loadFromFile(fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            boolean updated = false;
             for (Person person : people) {
-                writer.write(person.id + "," + person.fullName + "," + person.contactInfo + "," +
-                        dateFormat.format(person.birthday) + "," + person.role);
+                if (person.getId() == id) {
+                    person.name = newName;
+                    person.contactInfo = newContact;
+                    updated = true;
+                }
+                // Write the updated or unchanged person data back to the file
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                writer.write(person.getId() + "," + person.getName() + "," + person.getContactInfo() + ","
+                        + dateFormat.format(person.getBirthday()) + "," + person.getRole());
                 writer.newLine();
             }
+            if (!updated) {
+                System.out.println("Person with ID " + id + " not found.");
+            }
         } catch (IOException e) {
-            System.out.println("Error saving data to file: " + e.getMessage());
+            System.out.println("Error updating person in file: " + e.getMessage());
         }
     }
 
-    @Override
-    public String toString() {
-        return "ID: " + id + ", Name: " + fullName + ", Contact: " + contactInfo +
-                ", Birthday: " + dateFormat.format(birthday) + ", Role: " + role;
+    // Static method to delete a person by ID from the file
+    public static void deletePerson(int id, String fileName) {
+        List<Person> people = loadFromFile(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            boolean deleted = false;
+            for (Person person : people) {
+                if (person.getId() != id) {
+                    // Write the remaining persons back to the file
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    writer.write(person.getId() + "," + person.getName() + "," + person.getContactInfo() + ","
+                            + dateFormat.format(person.getBirthday()) + "," + person.getRole());
+                    writer.newLine();
+                } else {
+                    deleted = true;
+                }
+            }
+            if (!deleted) {
+                System.out.println("Person with ID " + id + " not found.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error deleting person from file: " + e.getMessage());
+        }
     }
 
+    // Static method to display all people in the specified file
+    public static void displayPeople(String fileName) {
+        List<Person> people = loadFromFile(fileName);
+        if (people.isEmpty()) {
+            System.out.println("No people found in " + fileName);
+        } else {
+            for (Person person : people) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                System.out.println("ID: " + person.getId() + ", Name: " + person.getName() + ", Contact Info: "
+                        + person.getContactInfo() + ", Birthday: " + dateFormat.format(person.getBirthday())
+                        + ", Role: " + person.getRole());
+            }
+        }
+    }
 }

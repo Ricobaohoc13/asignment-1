@@ -8,10 +8,10 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // Load sample data from files
-        Person.loadFromFile("Host.dat", "Host");
-        Person.loadFromFile("Owner.dat", "Owner");
-        Person.loadFromFile("Tenant.dat", "Tenant");
+        // Load sample data from files for each role
+        Person.loadFromFile("Host.dat");
+        Person.loadFromFile("Owner.dat");
+        Person.loadFromFile("Tenant.dat");
 
         int choice;
         do {
@@ -83,18 +83,24 @@ public class Main {
             String contactInfo = scanner.nextLine();
 
             System.out.print("Enter Birthday (yyyy-MM-dd): ");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date birthday = dateFormat.parse(scanner.nextLine());
+            String birthdayString = scanner.nextLine();
 
-            // Add new person to the list and save to the file
+            // Parse the date
+            if (birthdayString.isEmpty()) {
+                System.out.println("Birthday cannot be empty.");
+                return;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = dateFormat.parse(birthdayString);
+
+            // Add new person to the correct list and save to the file
             Person person = new Person(id, fullName, contactInfo, birthday, role);
-            Person.addPerson(person, role, fileName);
+            Person.addPerson(person, fileName);
             System.out.println(role + " added successfully.");
         } catch (Exception e) {
             System.out.println("Error adding person: " + e.getMessage());
         }
     }
-
 
     private static void updatePerson() {
         System.out.println("\nChoose Role to Update:");
@@ -132,7 +138,8 @@ public class Main {
         String newContact = scanner.nextLine();
 
         // Update person in the specified role file
-        Person.updatePerson(id, newName, newContact, role, fileName);
+        Person.updatePerson(id, newName, newContact, fileName);
+        System.out.println(role + " updated successfully.");
     }
 
     private static void deletePerson() {
@@ -143,8 +150,8 @@ public class Main {
         System.out.print("Enter your choice: ");
         int roleChoice = Integer.parseInt(scanner.nextLine());
 
-        String role;
-        String fileName;
+        String role = null;
+        String fileName = null;
         switch (roleChoice) {
             case 1:
                 role = "Host";
@@ -167,7 +174,8 @@ public class Main {
         int id = Integer.parseInt(scanner.nextLine());
 
         // Delete person in the specified role file
-        Person.deletePerson(id, role, fileName);
+        Person.deletePerson(id, fileName);
+        System.out.println(role + " deleted successfully.");
     }
 
     private static void displayPeople() {
@@ -178,16 +186,20 @@ public class Main {
         System.out.print("Enter your choice: ");
         int roleChoice = Integer.parseInt(scanner.nextLine());
 
-        String role;
+        String role = null;
+        String fileName = null;
         switch (roleChoice) {
             case 1:
                 role = "Host";
+                fileName = "Host.dat";
                 break;
             case 2:
                 role = "Owner";
+                fileName = "Owner.dat";
                 break;
             case 3:
                 role = "Tenant";
+                fileName = "Tenant.dat";
                 break;
             default:
                 System.out.println("Invalid choice.");
@@ -195,5 +207,6 @@ public class Main {
         }
 
         System.out.println("\n--- Displaying All " + role + "s ---");
+        Person.displayPeople(fileName);
     }
 }

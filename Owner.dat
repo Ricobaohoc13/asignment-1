@@ -1,16 +1,16 @@
-1,Bob Brown,bob@tenant.com,1995-10-10,Tenant
-2,Alice Johnson,alice@tenant.com,1988-04-15,Tenant
-3,John Doe,john@tenant.com,1985-05-20,Tenant
-4,Jane Smith,jane@tenant.com,1992-03-12,Tenant
-5,Charlie White,charlie@tenant.com,1990-08-23,Tenant
-6,Emily Davis,emily@tenant.com,1987-11-05,Tenant
-7,Michael Brown,michael@tenant.com,1980-12-25,Tenant
-8,Sarah Wilson,sarah@tenant.com,1983-07-08,Tenant
-9,David Lee,david@tenant.com,1993-01-15,Tenant
-10,Susan Clark,susan@tenant.com,1989-09-10,Tenant
-11,James Miller,james@tenant.com,1984-02-20,Tenant
-12,Laura Lewis,laura@tenant.com,1991-06-30,Tenant
-13,Robert Martin,robert@tenant.com,1986-10-05,Tenant
-14,Jessica Walker,jessica@tenant.com,1992-04-25,Tenant
-15,Daniel Robinson,daniel@tenant.com,1987-03-15,Tenant
-25,bao hoc,baohoc@gmail.com,2000-12-12,Owner
+1, Charlie White, charlie@owner.com, 1975-07-30, Owner
+2, David Green, david@owner.com, 1980-02-12, Owner
+3, Emma Harris, emma@owner.com, 1985-06-15, Owner
+4, Frank Thomas, frank@owner.com, 1978-11-20, Owner
+5, Grace Young, grace@owner.com, 1990-01-05, Owner
+6, Henry King, henry@owner.com, 1984-03-18, Owner
+7, Isabel Wright, isabel@owner.com, 1981-09-22, Owner
+8, Jack Scott, jack@owner.com, 1982-10-14, Owner
+9, Karen Adams, karen@owner.com, 1986-12-05, Owner
+10, Liam Collins, liam@owner.com, 1979-04-29, Owner
+11, Mary Mitchell, mary@owner.com, 1983-08-17, Owner
+12, Nathan Turner, nathan@owner.com, 1987-07-11, Owner
+13, Olivia Parker, olivia@owner.com, 1989-06-25, Owner
+14, Paul Murphy, paul@owner.com, 1977-09-19, Owner
+15, Quentin Bennett, quentin@owner.com, 1988-05-23, Owner
+17,kanade,kanade@gmail.com,2000-04-20,Owner

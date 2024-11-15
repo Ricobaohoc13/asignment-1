@@ -1,17 +1,15 @@
-1,Bob Brown,bob@tenant.com,1995-10-10,Tenant
-2,Alice Johnson,alice@tenant.com,1988-04-15,Tenant
-3,John Doe,john@tenant.com,1985-05-20,Tenant
-4,Jane Smith,jane@tenant.com,1992-03-12,Tenant
-5,Charlie White,charlie@tenant.com,1990-08-23,Tenant
-6,Emily Davis,emily@tenant.com,1987-11-05,Tenant
-7,Michael Brown,michael@tenant.com,1980-12-25,Tenant
-8,Sarah Wilson,sarah@tenant.com,1983-07-08,Tenant
-9,David Lee,david@tenant.com,1993-01-15,Tenant
-10,Susan Clark,susan@tenant.com,1989-09-10,Tenant
-11,James Miller,james@tenant.com,1984-02-20,Tenant
-12,Laura Lewis,laura@tenant.com,1991-06-30,Tenant
-13,Robert Martin,robert@tenant.com,1986-10-05,Tenant
-14,Jessica Walker,jessica@tenant.com,1992-04-25,Tenant
-15,Daniel Robinson,daniel@tenant.com,1987-03-15,Tenant
-25,bao hoc,baohoc@gmail.com,2000-12-12,Owner
-30,stella,stella@gmail.com,2005-06-19,Tenant
+1, Alice Cooper, alice@host.com,1980-03-01, Host
+2, Bob Smith, bob@host.com,1982-05-14, Host
+3, Charlie Johnson, charlie@host.com,1975-07-22, Host
+4, David Brown, david@host.com,1990-11-08, Host
+5, Emma Davis, emma@host.com,1985-01-15, Host
+6, Frank Miller, frank@host.com,1992-09-30, Host
+7, Grace Wilson, grace@host.com,1988-12-05, Host
+8, Henry Taylor, henry@host.com,1979-04-18, Host
+9, Isabel Thomas, isabel@host.com,1983-06-27, Host
+10, Jack White, jack@host.com,1987-08-19, Host
+11, Karen Martinez, karen@host.com,1991-02-25, Host
+12, Liam Robinson, liam@host.com,1986-10-12, Host
+13, Mary Clark, mary@host.com,1989-07-03, Host
+14, Nathan Lewis, nathan@host.com,1981-09-21, Host
+15, Olivia Walker, olivia@host.com,1984-03-09, Host
